@@ -20,7 +20,8 @@ request('https://api.tjournal.ru/2.3/club?count=30&sortMode=recent', function (e
                     "title": "TJ",
                     "subtitle": "Французский видеохостинг Dailymotion сообщил о планах избежать блокировки в России"
                   },
-                  "id": 40276
+                  "id": 40276,
+		  "fullWidth": false
                 }
               }
             ],
@@ -29,13 +30,13 @@ request('https://api.tjournal.ru/2.3/club?count=30&sortMode=recent', function (e
                 "elementName": "CardHeader",
                 "attributes": {
                   "title": "Французский видеохостинг Dailymotion сообщил о планах избежать блокировки в России",
-                  "subtitle": "Wed, 25 Jan 2017   Дамир Камалетдинов"
+                  "subtitle": "Wed, 25 Jan 2017"
                 }
               },
               {
                 "elementName": "CardBodyText",
                 "attributes": {
-                  "text": "<p>Представители Dailymotion заявили, что компания не знает о блокировке в России и планирует её избежать. Ранее Мосгорсуд постановил «навечно» заблокировать сервис в России за нелегальное распространение нескольких шоу телеканала «Пятница!». Об этом <a href=\"https://tjournal.ru/redirect?url=http%3A%2F%2Fwww.vedomosti.ru%2Ftechnology%2Farticles%2F2017%2F01%2F25%2F674874-videohosting-dailymotion\" target=\"_blank\" rel=\"noreferrer\">сообщают</a> «Ведомости».</p>"
+                  "text": "Представители Dailymotion заявили, что компания не знает о блокировке в России и планирует её избежать. Ранее Мосгорсуд постановил «навечно» заблокировать сервис в России за нелегальное распространение нескольких шоу телеканала «Пятница!». Об этом сообщают «Ведомости»."
                 }
               },
               {
@@ -52,7 +53,7 @@ request('https://api.tjournal.ru/2.3/club?count=30&sortMode=recent', function (e
                 "attributes": {
                   "labels": [
                     {
-                      "name": "Комменты: 13",
+                      "name": "13",
                       "color": "#42a5f5"
                     }
                   ],
