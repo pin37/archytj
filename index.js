@@ -4,7 +4,6 @@ var app = express();
 request('https://api.tjournal.ru/2.3/club?count=30&sortMode=recent', function (error, response, body) {
     if (!error && response.statusCode == 200) {
         var news = JSON.parse(body);
-
         app.post('/', function (req, res) {
           var card = {
             "view": { "type": "CARDS" },
@@ -23,27 +22,19 @@ request('https://api.tjournal.ru/2.3/club?count=30&sortMode=recent', function (e
                         "subtitle": "В Омске из мёртвого кота сделали «памятник зиме», символизирующий убийственный холод"
                       },
                       //"linkTo": "",
-                      "id": 40280
-                      //"createdAt": "…"
+                      "id": 40280,
+                      "children": [
+                        {
+                          "elementName": "CardHeader",
+                          "attributes": {
+                            "title": "В Омске из мёртвого кота сделали «памятник зиме», символизирующий убийственный холод"
+                          }
+                        }
+                      ]
                     }
                   }
                 ]
               }
-              /*{
-                "elementName": "Card",
-                "attributes": {
-                  "linkTo": "https://google.com/",
-                  "fullWidth": false
-                },
-                "children": [
-                  {
-                    "elementName": "CardHeader",
-                    "attributes": {
-                      "title": "card title"
-                    }
-                  }
-                ]
-              }*/
             ]
           };
           res.json(card);
