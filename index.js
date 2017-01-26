@@ -3,42 +3,55 @@ var request = require('request');
 var app = express();
 request('https://api.tjournal.ru/2.3/club?count=30&sortMode=recent', function (error, response, body) {
     if (!error && response.statusCode == 200) {
-        console.log(body) // Print the google web page.
+        var news = JSON.parse(body);
+
+        app.post('/', function (req, res) {
+          var card = {
+            "view": { "type": "CARDS" },
+            "result": [
+              {
+                "elementName": "Cards",
+                "children": [
+                  {
+                    "elementName": "Card",
+                    "attributes": {
+                      "uri": "https://tjournal.ru/40280-v-omske-iz-myortvogo-kota-sdelali-pamyatnik-zime-simvoliziruushii-ubiistvennii-holod",
+                      "updatedAt": "…",
+                      "timestamp": 1485403283,
+                      "pushNotification": {
+                        "title": "TJ",
+                        "subtitle": "В Омске из мёртвого кота сделали «памятник зиме», символизирующий убийственный холод"
+                      },
+                      //"linkTo": "",
+                      "id": 40280
+                      //"createdAt": "…"
+                    }
+                  }
+                ]
+              }
+              /*{
+                "elementName": "Card",
+                "attributes": {
+                  "linkTo": "https://google.com/",
+                  "fullWidth": false
+                },
+                "children": [
+                  {
+                    "elementName": "CardHeader",
+                    "attributes": {
+                      "title": "card title"
+                    }
+                  }
+                ]
+              }*/
+            ]
+          };
+          res.json(card);
+        });
+
      }
 });
 
-/*app.post('/', function (req, res) {
-	var options = {
-	  host: 'https://api.tjournal.ru',
-	  port: 80,
-	  path: '/2.3/club?count=30&sortMode=recent',
-	  method: 'GET'
-	};
-
-  var card = {
-    "view": { "type": "CARDS" },
-    "result": [
-			{
-			  "elementName": "Card",
-			  "attributes": {
-			    "linkTo": "https://google.com/",
-			    "fullWidth": false
-			  },
-			  "children": [
-			    {
-			      "elementName": "CardHeader",
-			      "attributes": {
-			        "title": "card title"
-			      }
-			    }
-			  ]
-			}
-    ]
-  };
-  res.json(card);
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000');
 });
-*/
-//app.listen(3000, function () {
-//  console.log('Example app listening on port 3000');
-//});
-
