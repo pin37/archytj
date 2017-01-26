@@ -13,22 +13,50 @@ request('https://api.tjournal.ru/2.3/club?count=30&sortMode=recent', function (e
             "children": [
               {
                 "elementName": "Card",
-                "children": [
-                  {
-                    "elementName": "CardHeader",
-                    "attributes": {
-                      "title": "В Омске из мёртвого кота сделали «памятник зиме», символизирующий убийственный холод"
-                    }
-                  }
-                ],
                 "attributes": {
-                  "uri": "https://tjournal.ru/40280-v-omske-iz-myortvogo-kota-sdelali-pamyatnik-zime-simvoliziruushii-ubiistvennii-holod",
-                  "timestamp": 1485403283,
+                  "uri": "https://tjournal.ru/40276-francuzskii-videohosting-dailymotion-soobshil-o-planah-izbezhat-blokirovki-v-rossii",
+                  "timestamp": 1485373987,
                   "pushNotification": {
                     "title": "TJ",
-                    "subtitle": "В Омске из мёртвого кота сделали «памятник зиме», символизирующий убийственный холод"
+                    "subtitle": "Французский видеохостинг Dailymotion сообщил о планах избежать блокировки в России"
                   },
-                  "id": 40280
+                  "id": 40276
+                }
+              }
+            ],
+            "children": [
+              {
+                "elementName": "CardHeader",
+                "attributes": {
+                  "title": "Французский видеохостинг Dailymotion сообщил о планах избежать блокировки в России",
+                  "subtitle": "Wed, 25 Jan 2017   Дамир Камалетдинов"
+                }
+              },
+              {
+                "elementName": "CardBodyText",
+                "attributes": {
+                  "text": "<p>Представители Dailymotion заявили, что компания не знает о блокировке в России и планирует её избежать. Ранее Мосгорсуд постановил «навечно» заблокировать сервис в России за нелегальное распространение нескольких шоу телеканала «Пятница!». Об этом <a href=\"https://tjournal.ru/redirect?url=http%3A%2F%2Fwww.vedomosti.ru%2Ftechnology%2Farticles%2F2017%2F01%2F25%2F674874-videohosting-dailymotion\" target=\"_blank\" rel=\"noreferrer\">сообщают</a> «Ведомости».</p>"
+                }
+              },
+              {
+                "elementName": "CardImage",
+                "attributes": {
+                  "width": 12,
+                  "uri": "https://static30.cmtt.ru/club/1b/26/35/580d7b5ef08d4e.png",
+                  //"hidpiUri": "…",
+                  "height": 12
+                }
+              },
+              {
+                "elementName": "CardFooter",
+                "attributes": {
+                  "labels": [
+                    {
+                      "name": "Комменты: 13",
+                      "color": "#42a5f5"
+                    }
+                  ],
+                  "footnote": "Roman Persianinov"
                 }
               }
             ]
