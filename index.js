@@ -20,9 +20,8 @@ request('https://api.tjournal.ru/2.3/club?count=30&sortMode=recent', function (e
                     "title": "TJ",
                     "subtitle": "Французский видеохостинг Dailymotion сообщил о планах избежать блокировки в России"
                   },
-                  "id": 40276,
-                  "fullWidth": false
-                }
+                  "id": 40276
+                },
                 "children": [
                   {
                     "elementName": "CardHeader",
