@@ -13,6 +13,14 @@ request('https://api.tjournal.ru/2.3/club?count=30&sortMode=recent', function (e
             "children": [
               {
                 "elementName": "Card",
+                "children": [
+                  {
+                    "elementName": "CardHeader",
+                    "attributes": {
+                      "title": "В Омске из мёртвого кота сделали «памятник зиме», символизирующий убийственный холод"
+                    }
+                  }
+                ],
                 "attributes": {
                   "uri": "https://tjournal.ru/40280-v-omske-iz-myortvogo-kota-sdelali-pamyatnik-zime-simvoliziruushii-ubiistvennii-holod",
                   "timestamp": 1485403283,
@@ -20,15 +28,7 @@ request('https://api.tjournal.ru/2.3/club?count=30&sortMode=recent', function (e
                     "title": "TJ",
                     "subtitle": "В Омске из мёртвого кота сделали «памятник зиме», символизирующий убийственный холод"
                   },
-                  "id": 40280,
-                  "children": [
-                    {
-                      "elementName": "CardHeader",
-                      "attributes": {
-                        "title": "В Омске из мёртвого кота сделали «памятник зиме», символизирующий убийственный холод"
-                      }
-                    }
-                  ]
+                  "id": 40280
                 }
               }
             ]
