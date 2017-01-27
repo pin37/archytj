@@ -23,7 +23,7 @@ function makeResponse(json, response) {
         'children': []
       }
     ]
-  }
+  };
 
   json.forEach(function(article, i, json) {
     cards.children[0].children.push(toCard(article));
@@ -48,15 +48,17 @@ function toCard(article) {
   cardFooter = {
     'elementName': 'CardFooter',
     'attributes': {}
-  }
+  },
   timestamp = new Date(article.date * 1000),
   title = article.title;
 
   card.attributes.id = article.id;
   card.attributes.uri = article.url;
   card.attributes.timestamp = timestamp;
-  card.attributes.pushNotification.title = 'TJ';
-  card.attributes.pushNotification.subtitle = title;
+  card.attributes.pushNotification = {
+    'title': 'TJ',
+    'subtitle': title
+  };
 
   cardHeader.attributes.title = title;
   if (dateFns.differenceInDays(Date.now(), timestamp) > 7) {
