@@ -1,11 +1,12 @@
-var express = require('express'),
+const express = require('express'),
   app = express(),
   fetch = require('node-fetch'),
-  dateFns = require('date-fns'),
   striptags = require('striptags');
 
+let requestsCount = 0;
 app.post('/', function (request, response) {
-  fetch('https://api.tjournal.ru/2.3/club?count=15&sortMode=recent')
+  console.log('Request from Archy.ai (' + ++requestsCount + ')');
+  fetch('https://api.tjournal.ru/2.3/club?count=50&sortMode=recent')
   .then(res => res.json())
   .then(json => makeResponse(json, response));
 });
@@ -15,12 +16,12 @@ app.listen(3000, function () {
 });
 
 function makeResponse(json, response) {
-  var cards = {
-    'elementName': 'Result',
-    'children': [
+  let cards = {
+    elementName: 'Result',
+    children: [
       {
-        'elementName': 'Cards',
-        'children': []
+        elementName: 'Cards',
+        children: []
       }
     ]
   };
@@ -32,58 +33,87 @@ function makeResponse(json, response) {
 }
 
 function toCard(article) {
-  var card = {
-    'elementName': 'Card',
-    'attributes': {},
-    'children': []
-  },
-  cardHeader = {
-    'elementName': 'CardHeader',
-    'attributes': {}
-  },
-  cardBodyText = {
-    'elementName': 'CardHeader',
-    'attributes': {}
-  },
-  cardFooter = {
-    'elementName': 'CardFooter',
-    'attributes': {}
-  },
-  timestamp = new Date(article.date * 1000),
+  const timestamp = new Date(article.date * 1000),
   title = article.title;
 
-  card.attributes.id = article.id;
-  card.attributes.uri = article.url;
-  card.attributes.timestamp = timestamp;
-  card.attributes.pushNotification = {
-    'title': 'TJ',
-    'subtitle': title
+  let card = {
+    elementName: 'Card',
+    attributes: {
+      id: article.id,
+      uri: article.url,
+      timestamp: timestamp,
+      pushNotification: {
+        title: 'TJ',
+        subtitle: title
+      } 
+    },
+    children: [
+      {
+        elementName: 'CardHeader',
+        attributes: {
+          title: title
+        }
+      },
+      {
+        elementName: 'Media',
+        attributes: {
+          imageUrl: article.publicAuthor.profile_image_url,
+          iconName: "clock-o",
+          created: {
+            by: article.publicAuthor.name,
+            at: timestamp
+          },
+          color: "#bdbdbd"
+        }
+      },
+      {
+        elementName: 'CardBodyText',
+        attributes: {
+          text: striptags(article.intro)
+        }
+      }
+    ]
   };
 
-  cardHeader.attributes.title = title;
-  if (dateFns.differenceInDays(Date.now(), timestamp) > 7) {
-    cardHeader.attributes.subtitle = dateFns.format(timestamp, 'DD.MM.YYYY');
-  } else {
-    var locale = require('date-fns/locale/ru');
-    cardHeader.attributes.subtitle = dateFns.distanceInWordsToNow(timestamp, locale);
-  }
-  card.children.push(cardHeader);
-
-  cardBodyText.attributes.text = striptags(article.intro);
-  card.children.push(cardBodyText);
-
-  var cover = article.cover;
-  if (cover !== null) {
-    var cardImage = {
-      'elementName': 'CardImage',
-      'attributes': {
-        'width': 12,
-        'height': 12
+  const cover = article.cover;
+  if (cover && cover.size) {
+    const cardImage = {
+      elementName: 'CardImage',
+      attributes: {
+        width: cover.size.width,
+        height: cover.size.height,
+        uri: cover.thumbnailUrl
       }
     };
-    cardImage.uri = article.cover.url;
     card.children.push(cardImage);
   }
 
+  const likesCount = article.likes.summ;
+  let like = '—';
+  if (likesCount > 0) {
+    like = '👍' + likesCount;
+  } else if (likesCount < 0) {
+    like = '👎' + likesCount;
+  }
+  const footer = {
+    elementName: 'CardFooter',
+    attributes: {
+      labels: [
+        {
+          name: like,
+          color: 'ffffff'
+        },
+        {
+          name: '👁' + article.hits,
+          color: 'ffffff'
+        },
+        {
+          name: '💬' + article.commentsCount,
+          color: 'ffffff'
+        }
+      ]
+    }
+  }
+  card.children.push(footer);
   return card;
 }
