@@ -2,7 +2,7 @@
   "name": "archytj",
   "version": "1.0.0",
   "description": "TJ news integration for Archy",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,7 +14,9 @@
   "author": "37pin",
   "license": "ISC",
   "dependencies": {
+    "date-fns": "^1.27.1",
     "express": "^4.14.0",
-    "request": "^2.79.0"
+    "node-fetch": "^1.6.3",
+    "striptags": "^2.2.1"
   }
 }
