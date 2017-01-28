@@ -4,8 +4,8 @@ const express = require('express'),
   striptags = require('striptags');
 
 let requestsCount = 0;
-app.post('/', function (request, response) {
-  console.log('Request from Archy.ai (' + ++requestsCount + ')');
+app.post('/archytj/', function (request, response) {
+  console.log('Request #' + ++requestsCount);
   fetch('https://api.tjournal.ru/2.3/club?count=50&sortMode=recent')
   .then(res => res.json())
   .then(json => makeResponse(json, response));
@@ -34,7 +34,25 @@ function makeResponse(json, response) {
 
 function toCard(article) {
   const timestamp = new Date(article.date * 1000),
-  title = article.title;
+  title = article.title,
+  userDevice = article.userDevice,
+  type = article.type;
+
+  let device = 'desktop';
+  if (userDevice === 2) {
+    device = 'apple';
+  } else if (userDevice === 1) {
+    device = 'android';
+  }
+  
+  let category = 'News';
+  if (type === 4) {
+    category = 'Article';
+  } else if (type === 3) {
+    category = 'Video';
+  } else if (type === 2) {
+    category = 'Off topic';
+  }
 
   let card = {
     elementName: 'Card',
@@ -51,14 +69,15 @@ function toCard(article) {
       {
         elementName: 'CardHeader',
         attributes: {
-          title: title
+          title: title,
+          subtitle: category
         }
       },
       {
         elementName: 'Media',
         attributes: {
           imageUrl: article.publicAuthor.profile_image_url,
-          iconName: "clock-o",
+          iconName: device,
           created: {
             by: article.publicAuthor.name,
             at: timestamp
@@ -113,6 +132,13 @@ function toCard(article) {
         }
       ]
     }
+  }
+  if (article.isReadMore) {
+    footer.attributes.labels.push(
+      {
+        name: '🔥hot',
+        color: 'ffffff'
+      });
   }
   card.children.push(footer);
   return card;
