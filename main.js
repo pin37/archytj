@@ -2,17 +2,24 @@ const express = require('express'),
   bodyParser = require('body-parser'),
   fetch = require('node-fetch'),
   striptags = require('striptags'),
+  buildUrl = require('build-url'),
   app = express();
 app.use(bodyParser.json());
 
-const limit = 20;
+const limit = 25;
 let requestsCount = 0;
 app.post('/archytj/', function (request, response) {
   console.log('Request #' + ++requestsCount + ' from user with id: ' + request.body.payload.user.id);
   let page = request.body.payload.nextResultCursor || { after: 0, limit: limit };
-  fetch('https://api.tjournal.ru/2.3/club?count=' + page.limit + '&offset=' +
-    page.after + '&sortMode=recent')
-    .then(res => res.json())
+  const url = buildUrl('https://api.tjournal.ru', {
+    path: '2.3/club',
+    queryParams: {
+        sortMode: 'recent',
+        count: page.limit,
+        offset: page.after
+      }
+  });
+  fetch(url).then(res => res.json())
     .then(json => makeResponse(json, response, page));
 });
 
@@ -112,7 +119,8 @@ function toCard(article) {
       }
     ]
   };
-  if (article.isReadMore) {
+  const isPopular = article.isReadMore;
+  if (isPopular) {
     footerAttributes.labels.push(
       {
         name: '🔥hot',
@@ -129,15 +137,14 @@ function toCard(article) {
   let footer = createElement('CardFooter', footerAttributes);
 
   // card
-  const cardAttributes = {
+  let cardAttributes = {
     id: article.id,
     uri: article.url,
-    timestamp: timestamp,
-    pushNotification: {
-      title: 'TJ',
-      subtitle: title
-    } 
+    timestamp: timestamp
   };
+  if (isPopular) {
+    cardAttributes.pushNotification = { title: 'TJ', subtitle: title };
+  }
   let card = createElement('Card', cardAttributes, [header, author, text, image, footer]);
   return card;
 }
