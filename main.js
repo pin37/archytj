@@ -9,8 +9,11 @@ app.use(bodyParser.json());
 const limit = 25;
 let requestsCount = 0;
 app.post('/archytj/', function (request, response) {
+  if (!request.body.payload) {
+    request.body.payload = { user: { id: null} };
+  }
   console.log('Request #' + ++requestsCount + ' from user with id: ' + request.body.payload.user.id);
-  let page = request.body.payload.nextResultCursor || { after: 0, limit: limit };
+  const page = request.body.payload.nextResultCursor || { after: 0, limit: limit };
   const url = buildUrl('https://api.tjournal.ru', {
     path: '2.3/club',
     queryParams: {
@@ -29,8 +32,8 @@ app.listen(3000, function () {
 
 function makeResponse(json, response, page) {
   page.after += limit;
-  let cards = createElement('Cards', null, []);
-  let result = createElement('Result', { nextResultCursor: page }, [cards]);
+  const cards = createElement('Cards', null, []);
+  const result = createElement('Result', { nextResultCursor: page }, [cards]);
 
   json.forEach(function(article, i, json) {
     result.children[0].children.push(toCard(article));
@@ -134,10 +137,10 @@ function toCard(article) {
         color: '#ffffff'
       });
   }
-  let footer = createElement('CardFooter', footerAttributes);
+  const footer = createElement('CardFooter', footerAttributes);
 
   // card
-  let cardAttributes = {
+  const cardAttributes = {
     id: article.id,
     uri: article.url,
     timestamp: timestamp
@@ -145,6 +148,6 @@ function toCard(article) {
   if (isPopular) {
     cardAttributes.pushNotification = { title: 'TJ', subtitle: title };
   }
-  let card = createElement('Card', cardAttributes, [header, author, text, image, footer]);
+  const card = createElement('Card', cardAttributes, [header, author, text, image, footer]);
   return card;
 }
