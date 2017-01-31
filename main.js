@@ -33,7 +33,7 @@ app.listen(3000, function () {
 function makeResponse(json, response, page) {
   page.after += limit;
   const cards = createElement('Cards', null, []);
-  const result = createElement('Result', { nextResultCursor: page }, [cards]);
+  const result = createElement('Result', { meta: { title: 'TJ' }, nextResultCursor: page }, [cards]);
 
   json.forEach(function(article, i, json) {
     result.children[0].children.push(toCard(article));
@@ -73,13 +73,12 @@ function toCard(article) {
   }
   const timestamp = new Date(article.date * 1000);
   const authorAttributes = {
-    imageUrl: article.publicAuthor.profile_image_url,
     iconName: device,
+    color: "#bdbdbd",
     created: {
       by: article.publicAuthor.name,
       at: timestamp
-    },
-    color: "#bdbdbd"
+    }
   };
   const author = createElement('Media', authorAttributes);
 
