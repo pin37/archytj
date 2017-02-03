@@ -94,7 +94,7 @@ function toCard(article) {
   let device = 'desktop';
   if (userDevice === 2) {
     device = 'apple';
-  } else if (userDevice === 1) {
+  } else if (userDevice === 3) {
     device = 'android';
   }
   const timestamp = new Date(article.date * 1000);
