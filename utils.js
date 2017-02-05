@@ -38,7 +38,7 @@ function createElement(elementName, attributes, children) {
   };
 }
 
-function removeFilter(category) {
+function removeFilterCategory(category) {
   if (category === 'TJ') category = 'all';
   const array = filters.slice();
   array.filter((value, i) => {
@@ -64,12 +64,15 @@ function makeResponse(json, response, page, type) {
   }
   const resultAttributes = {
     meta: { title: filterCategory },
-    links: removeFilter(filterCategory),
+    links: removeFilterCategory(filterCategory),
     nextResultCursor: page
   };
   const result = createElement('Result', resultAttributes, [cards]);
 
   json.forEach(function(article, i, json) {
+    if (type !== 0) {
+      article.type = 0;
+    }
     result.children[0].children.push(toCard(article));
   });
   response.json(result);
@@ -79,13 +82,15 @@ function toCard(article) {
   // header
   const title = article.title,
     type = article.type;
-  let category = 'News';
+  let category = null;
   if (type === 4) {
     category = 'Article';
   } else if (type === 3) {
     category = 'Video';
   } else if (type === 2) {
     category = 'Off topic';
+  } else if (type === 1) {
+    category = 'News';
   }
   const header = createElement('CardHeader', { title: title, subtitle: category });
 
@@ -171,7 +176,10 @@ function toCard(article) {
   if (isPopular) {
     cardAttributes.pushNotification = { title: 'TJ', subtitle: title };
   }
-  const card = createElement('Card', cardAttributes, [header, author, text, image, footer]);
+  const card = createElement('Card', cardAttributes, [header, author, text, footer]);
+  if (image) {
+    card.children.splice(3, 0, image);
+  } 
   return card;
 }
 

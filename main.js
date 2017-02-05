@@ -26,11 +26,11 @@ function sendRequest(request, response, type) {
   const url = buildUrl('https://api.tjournal.ru', {
     path: '2.3/club',
     queryParams: {
-        sortMode: 'recent',
-        count: page.limit,
-        offset: page.after,
-        type: type
-      }
+      sortMode: 'recent',
+      count: page.limit,
+      offset: page.after,
+      type: type
+    }
   });
   fetch(url).then(res => res.json())
     .then(json => utils.makeResponse(json, response, page, type));
