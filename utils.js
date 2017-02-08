@@ -82,17 +82,16 @@ function toCard(article) {
   // header
   const title = article.title,
     type = article.type;
-  let category = null;
+  const header = createElement('CardHeader', { title: title });
   if (type === 4) {
-    category = 'Article';
+    header.attributes.subtitle = 'Article';
   } else if (type === 3) {
-    category = 'Video';
+    header.attributes.subtitle = 'Video';
   } else if (type === 2) {
-    category = 'Off topic';
+    header.attributes.subtitle = 'Off topic';
   } else if (type === 1) {
-    category = 'News';
+    header.attributes.subtitle = 'News';
   }
-  const header = createElement('CardHeader', { title: title, subtitle: category });
 
   // author
   const userDevice = article.userDevice;
@@ -104,8 +103,9 @@ function toCard(article) {
   }
   const timestamp = new Date(article.date * 1000);
   const authorAttributes = {
-    iconName: device,
-    color: "#bdbdbd",
+    imageUrl: article.publicAuthor.profile_image_url,
+    // iconName: device,
+    color: '#bdbdbd',
     created: {
       by: article.publicAuthor.name,
       at: timestamp
