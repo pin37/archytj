@@ -8,22 +8,22 @@ const striptags = require('striptags'),
         subscribe: true
       }
     }, {
-      address: '/articles/',
+      address: '/articles',
       meta: {
         title: 'Articles'
       }
     }, {
-      address: '/videos/',
+      address: '/videos',
       meta: {
         title: 'Videos'
       }
     }, {
-      address: '/offtop/',
+      address: '/offtop',
       meta: {
         title: 'Off topic'
       }
     }, {
-      address: '/news/',
+      address: '/news',
       meta: {
         title: 'News'
       }

@@ -14,7 +14,7 @@
   "author": "37pin",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.16.0",
+    "body-parser": "^1.16.1",
     "build-url": "^1.0.9",
     "express": "^4.14.1",
     "node-fetch": "^1.6.3",
