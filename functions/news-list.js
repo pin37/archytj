@@ -1,64 +1,58 @@
 const striptags = require('striptags'),
-  limit = 25,
-  filters = [
-    {
-      address: '/',
-      meta: {
-        title: 'All',
-        subscribe: true
-      }
-    }, {
-      address: '/editorial',
-      meta: {
-        title: 'Editorial articles'
-      }
-    }, {
-      address: '/week',
-      meta: {
-        title: 'Best of the week'
-      }
-    }, {
-      address: '/articles',
-      meta: {
-        title: 'Articles'
-      }
-    }, {
-      address: '/videos',
-      meta: {
-        title: 'Videos'
-      }
-    }, {
-      address: '/offtop',
-      meta: {
-        title: 'Off topic'
-      }
-    }, {
-      address: '/news',
-      meta: {
-        title: 'News'
-      }
-    }
-  ];
+  fetch = require('node-fetch'),
+  buildUrl = require('build-url'),
+  utils = require('./utils'),
+  limit = 25;
 
-function createElement(elementName, attributes, children) { 
-  return {
-    elementName,
-    attributes,
-    children
-  };
+function sendRequest(request, response) {
+  const requestUrl = request.url;
+  let type = 0;
+  if (requestUrl.includes('news')) {
+    type = 1;
+  } else if (requestUrl.includes('offtop')) {
+    type = 2;
+  } else if (requestUrl.includes('videos')) {
+    type = 3;
+  } else if (requestUrl.includes('offtop')) {
+    type = 4;
+  }
+  let sortMode = 'recent';
+  if (requestUrl.includes('editorial')) {
+    sortMode = 'editorial';
+  } else if (requestUrl.includes('week')) {
+    sortMode = 'week';
+  }
+  if (!request.body.payload) {
+    request.body.payload = {};
+  }
+  const page = request.body.payload.nextResultCursor || { after: 0, limit: limit };
+  const responseUrl = buildUrl('https://api.tjournal.ru', {
+    path: '2.3/club',
+    queryParams: {
+      count: page.limit,
+      offset: page.after,
+      sortMode,
+      type
+    }
+  });
+  if (sortMode !== 'recent') {
+    type = 5;
+  }
+  fetch(responseUrl).then(res => res.json())
+    .then(json => makeResponse(json, response, page, type));
 }
 
 function makeResponse(json, response, page, type) {
   page.after += limit;
-  const cards = createElement('Cards', null, []);
+  const cards = utils.createElement('Cards', null, []);
   const resultAttributes = {
-    links: filters,
+    links: utils.filters,
     nextResultCursor: page
   };
   if (type === 0) {
     resultAttributes.meta = { title: 'TJ' };
   }
-  const result = createElement('Result', resultAttributes, [cards]);
+  const result = utils.createElement('Result', resultAttributes, [cards]);
 
   for (let article of json) {
     if (type !== 0 && type !== 5) {
@@ -73,7 +67,7 @@ function toCard(article) {
   // header
   const title = article.title,
     type = article.type;
-  const header = createElement('CardHeader', { title });
+  const header = utils.createElement('CardHeader', { title });
   if (type === 4) {
     header.attributes.subtitle = 'Article';
   } else if (type === 3) {
@@ -102,10 +96,10 @@ function toCard(article) {
       at: timestamp
     }
   };
-  const author = createElement('Media', authorAttributes);
+  const author = utils.createElement('Media', authorAttributes);
 
   // text
-  const text = createElement('CardBodyText', { text: striptags(article.intro) });
+  const text = utils.createElement('CardBodyText', { text: striptags(article.intro) });
 
   // image
   let image = null;
@@ -116,7 +110,7 @@ function toCard(article) {
       height: cover.size.height,
       uri: cover.thumbnailUrl
     }
-    image = createElement('CardImage', imageAttributes);
+    image = utils.createElement('CardImage', imageAttributes);
   }
 
   // footer
@@ -156,23 +150,29 @@ function toCard(article) {
         color: '#ffffff'
       });
   }
-  const footer = createElement('CardFooter', footerAttributes);
+  const footer = utils.createElement('CardFooter', footerAttributes);
 
   // card
+  const articleId = article.id;
   const cardAttributes = {
-    id: article.id,
-    uri: article.url,
+    id: articleId,
+    // uri: article.url,
+    linkTo: {
+      address: "@pin37/tj/story",
+      args: {
+        id: articleId
+      }
+    },
     timestamp
   };
   if (isPopular) {
     cardAttributes.pushNotification = { title: 'TJ', subtitle: title };
   }
-  const card = createElement('Card', cardAttributes, [header, author, text, footer]);
+  const card = utils.createElement('Card', cardAttributes, [header, author, text, footer]);
   if (image) {
     card.children.splice(3, 0, image);
   } 
   return card;
 }
 
-exports.limit = limit;
-exports.makeResponse = makeResponse;
+exports.sendRequest = sendRequest;
