@@ -51,12 +51,8 @@ function sendRequest(request, response) {
       type
     }
   });
-  switch (sortMode) {
-    case 'editorial':
-      type = 5;
-      break;
-    case 'week':
-      type = 6;
+  if (sortMode !== 'recent') {
+    type = 5;
   }
   fetch(responseUrl).then(res => res.json())
     .then(json => utils.makeResponse(json, response, page, type));

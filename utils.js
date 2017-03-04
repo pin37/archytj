@@ -10,14 +10,12 @@ const striptags = require('striptags'),
     }, {
       address: '/editorial',
       meta: {
-        title: 'Editorial articles',
-        subscribe: true
+        title: 'Editorial articles'
       }
     }, {
       address: '/week',
       meta: {
-        title: 'Best of the week',
-        subscribe: true
+        title: 'Best of the week'
       }
     }, {
       address: '/articles',
@@ -50,51 +48,20 @@ function createElement(elementName, attributes, children) {
   };
 }
 
-function removeFilterCategory(category) {
-  if (category === 'TJ') {
-    category = 'all';
-  }
-  const array = filters.slice();
-  array.filter((value, i) => {
-    if (value.meta.title.toLowerCase() === category.toLowerCase()) {
-      array.splice(i, 1);
-    }
-  });
-  return array;
-}
-
 function makeResponse(json, response, page, type) {
   page.after += limit;
   const cards = createElement('Cards', null, []);
-  let filterCategory = 'TJ';
-  switch (type) {
-    case 1:
-      filterCategory = 'News';
-      break;
-    case 2:
-      filterCategory = 'Off topic';
-      break;
-    case 3:
-      filterCategory = 'Videos';
-      break;
-    case 4:
-      filterCategory = 'Articles';
-      break;
-    case 5:
-      filterCategory = 'Editorial articles';
-      break;
-    case 6:
-      filterCategory = 'Best of the week';
-  }
   const resultAttributes = {
-    meta: { title: filterCategory },
-    links: removeFilterCategory(filterCategory),
+    links: filters,
     nextResultCursor: page
   };
+  if (type === 0) {
+    resultAttributes.meta = { title: 'TJ' };
+  }
   const result = createElement('Result', resultAttributes, [cards]);
 
   for (let article of json) {
-    if (type !== 0 && type !== 5 && type != 6) {
+    if (type !== 0 && type !== 5) {
       article.type = 0;
     }
     result.children[0].children.push(toCard(article));
