@@ -1,39 +1,41 @@
+const striptags = require('striptags');
+
 const filters = [
     {
       address: '/',
       meta: {
-        title: 'All',
+        title: 'Все',
         subscribe: true
       }
     }, {
       address: '/editorial',
       meta: {
-        title: 'Editorial articles'
+        title: 'Редакционные статьи'
       }
     }, {
       address: '/week',
       meta: {
-        title: 'Best of the week'
+        title: 'Лучшее за неделю'
       }
     }, {
       address: '/articles',
       meta: {
-        title: 'Articles'
+        title: 'Статьи'
       }
     }, {
       address: '/videos',
       meta: {
-        title: 'Videos'
+        title: 'Видео'
       }
     }, {
       address: '/offtop',
       meta: {
-        title: 'Off topic'
+        title: 'Офтоп'
       }
     }, {
       address: '/news',
       meta: {
-        title: 'News'
+        title: 'Новости'
       }
     }
   ];
@@ -46,5 +48,14 @@ function createElement(elementName, attributes, children) {
   };
 }
 
+function textNormalize(text) {
+  return striptags(text, '<p>')
+    .replace(new RegExp('</p><p>', 'g'), '\n')
+    .replace(new RegExp('<p>', 'g'), '')
+    .replace(new RegExp('</p>', 'g'), '')
+    .trim();
+}
+
 exports.filters = filters;
 exports.createElement = createElement;
+exports.textNormalize = textNormalize;

@@ -1,5 +1,4 @@
-const striptags = require('striptags'),
-  fetch = require('node-fetch'),
+const fetch = require('node-fetch'),
   buildUrl = require('build-url'),
   utils = require('./utils'),
   limit = 25;
@@ -64,18 +63,37 @@ function makeResponse(json, response, page, type) {
 }
 
 function toCard(article) {
+  // card
+  const articleId = article.id;
+  const timestamp = new Date(article.date * 1000);
+  const cardAttributes = {
+    id: articleId,
+    linkTo: {
+      address: "@pin37/tj/story",
+      args: {
+        id: articleId
+      }
+    },
+    timestamp
+  };
+  const isPopular = article.isReadMore;
+  const title = article.title;
+  if (isPopular) {
+    cardAttributes.pushNotification = { title: 'TJ', subtitle: title };
+  }
+  const card = utils.createElement('Card', cardAttributes, []);
+
   // header
-  const title = article.title,
-    type = article.type;
   const header = utils.createElement('CardHeader', { title });
+  const type = article.type;
   if (type === 4) {
-    header.attributes.subtitle = 'Article';
+    header.attributes.subtitle = 'Статья';
   } else if (type === 3) {
-    header.attributes.subtitle = 'Video';
+    header.attributes.subtitle = 'Видео';
   } else if (type === 2) {
-    header.attributes.subtitle = 'Off topic';
+    header.attributes.subtitle = 'Офтоп';
   } else if (type === 1) {
-    header.attributes.subtitle = 'News';
+    header.attributes.subtitle = 'Новость';
   }
 
   // author
@@ -86,11 +104,10 @@ function toCard(article) {
   } else if (userDevice === 3) {
     device = 'android';
   }
-  const timestamp = new Date(article.date * 1000);
   const authorAttributes = {
     imageUrl: article.publicAuthor.profile_image_url,
     // iconName: device,
-    color: '#bdbdbd',
+    color: 'bdbdbd',
     created: {
       by: article.publicAuthor.name,
       at: timestamp
@@ -99,10 +116,10 @@ function toCard(article) {
   const author = utils.createElement('Media', authorAttributes);
 
   // text
-  const text = utils.createElement('CardBodyText', { text: striptags(article.intro) });
+  const text = utils.createElement('CardBodyText', { text: utils.textNormalize(article.intro) });
+  card.children.push(header, author, text);
 
   // image
-  let image = null;
   const cover = article.cover;
   if (cover && cover.size) {
     const imageAttributes = {
@@ -110,23 +127,27 @@ function toCard(article) {
       height: cover.size.height,
       uri: cover.thumbnailUrl
     }
-    image = utils.createElement('CardImage', imageAttributes);
+    const image = utils.createElement('CardImage', imageAttributes);
+    card.children.push(image);
   }
 
   // footer
   const likesCount = article.likes.summ;
-  let like = '—';
+  const like = {
+    name: '—',
+    color: 'ffffff'
+  };
   if (likesCount > 0) {
-    like = '👍+' + likesCount;
+    like.name = '👍+' + likesCount;
+    like.color = 'dcedc8';
   } else if (likesCount < 0) {
-    like = '👎' + likesCount;
+    like.name = '👎' + likesCount;
+    like.color = 'ffcdd2';
   }
   const footerAttributes = {
     labels: [
+      like,
       {
-        name: like,
-        color: 'ffffff'
-      }, {
         name: '👁' + article.hits,
         color: 'ffffff'
       }, {
@@ -135,7 +156,6 @@ function toCard(article) {
       }
     ]
   };
-  const isPopular = article.isReadMore;
   if (isPopular) {
     footerAttributes.labels.push(
       {
@@ -147,32 +167,12 @@ function toCard(article) {
     footerAttributes.labels.push(
       {
         name: '💵ad',
-        color: '#ffffff'
+        color: 'ffffff'
       });
   }
   const footer = utils.createElement('CardFooter', footerAttributes);
-
-  // card
-  const articleId = article.id;
-  const cardAttributes = {
-    id: articleId,
-    // uri: article.url,
-    linkTo: {
-      address: "@pin37/tj/story",
-      args: {
-        id: articleId
-      }
-    },
-    timestamp
-  };
-  if (isPopular) {
-    cardAttributes.pushNotification = { title: 'TJ', subtitle: title };
-  }
-  const card = utils.createElement('Card', cardAttributes, [header, author, text, footer]);
-  if (image) {
-    card.children.splice(3, 0, image);
-  } 
+  card.children.push(footer);
   return card;
 }
 
-exports.sendRequest = sendRequest;
+module.exports = sendRequest;
