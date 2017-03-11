@@ -76,24 +76,24 @@ function getCardFooter(article) {
   const likesCount = article.likes.summ;
   const like = {
     name: '—',
-    color: 'ffffff'
+    color: '#ffffff'
   };
   if (likesCount > 0) {
     like.name = '👍+' + likesCount;
-    like.color = 'dcedc8';
+    like.color = '#dcedc8';
   } else if (likesCount < 0) {
     like.name = '👎' + likesCount;
-    like.color = 'ffcdd2';
+    like.color = '#ffcdd2';
   }
   const footerAttributes = {
     labels: [
       like,
       {
         name: '👁' + article.hits,
-        color: 'ffffff'
+        color: '#ffffff'
       }, {
         name: '💬' + article.commentsCount,
-        color: 'ffffff'
+        color: '#ffffff'
       }
     ]
   };
@@ -101,14 +101,14 @@ function getCardFooter(article) {
     footerAttributes.labels.push(
       {
         name: '🔥hot',
-        color: 'ffffff'
+        color: '#ffffff'
       });
   }
   if (article.isAdvertising) {
     footerAttributes.labels.push(
       {
         name: '💵ad',
-        color: 'ffffff'
+        color: '#ffffff'
       });
   }
   return createElement('CardFooter', footerAttributes);

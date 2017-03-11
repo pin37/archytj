@@ -115,7 +115,7 @@ function makeResponse(story, response) {
         // quote
         const quoteAttributes = {
           iconName: 'quote-left',
-          color: 'bdbdbd',
+          color: '#bdbdbd',
           title: utils.textNormalize(divData.text)
         };
         const quote = utils.createElement('Media', quoteAttributes);
@@ -126,7 +126,7 @@ function makeResponse(story, response) {
           quoteAttributes.labels = [
             {
               name: cite,
-              color: 'f5f5f5'
+              color: '#ffffff'
             }
           ];
         } else {
@@ -241,7 +241,7 @@ function makeResponse(story, response) {
         labels: [
           {
             name: '👍+' + commentPreview.likes.summ,
-            color: 'dcedc8'
+            color: '#dcedc8'
           }
         ]
       };

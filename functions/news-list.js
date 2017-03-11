@@ -95,7 +95,7 @@ function toCard(article) {
   const authorAttributes = {
     imageUrl: article.publicAuthor.profile_image_url,
     // iconName: device,
-    color: 'bdbdbd',
+    color: '#bdbdbd',
     created: {
       by: article.publicAuthor.name,
       at: timestamp
