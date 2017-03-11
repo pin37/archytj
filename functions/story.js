@@ -10,7 +10,7 @@ function sendRequest(request, response) {
         id: null
       },
       args : {
-        id: 41547
+        id: 1234
       }
     };
   }
@@ -36,17 +36,13 @@ function makeResponse(story, response) {
 
 
   // card
-  const timestamp = new Date(story.date * 1000);
-  const cardAttributes = {
-    fullWidth: true,
-    timestamp
-  };
-  const card = utils.createElement('Card', cardAttributes, []);
+  const card = utils.createElement('Card', { fullWidth: true }, []);
 
   // header
   const header = utils.getCardHeader(story);
 
   // author
+  const timestamp = new Date(story.date * 1000);
   const authorAttributes = {
     imageUrl: story.publicAuthor.profile_image_url,
     created: {
@@ -85,6 +81,7 @@ function makeResponse(story, response) {
         };
         const image = utils.createElement('CardImage', imageAttributes);
         card.children.push(image);
+        // image caption
         const imageCaptionText = divData.caption;
         if (imageCaptionText) {
           const imageCaption = utils.createElement('CardHeader', { subtitle: imageCaptionText });
@@ -92,7 +89,7 @@ function makeResponse(story, response) {
         }
         break;
       case 'gallery':
-        // image
+        // gallery
         const files = divData.files;
         for (let img of files) {
           const galleryAttributes = {
@@ -123,6 +120,7 @@ function makeResponse(story, response) {
         };
         const quote = utils.createElement('Media', quoteAttributes);
         card.children.push(quote);
+        // cite
         const cite = divData.cite;
         if (cite) {
           quoteAttributes.labels = [
@@ -132,8 +130,8 @@ function makeResponse(story, response) {
             }
           ];
         } else {
-          const quoteSeparator = utils.createElement('Separator');
-          card.children.push(quoteSeparator);
+          // separator
+          card.children.push(utils.createElement('Separator'));
         }
         break;
       case 'tweet':
@@ -150,6 +148,7 @@ function makeResponse(story, response) {
         const tweet = utils.createElement('Media', tweetAttributes);
         card.children.push(tweet);
 
+        // tweet text
         const tweetTextAttributes = {
           iconName: 'twitter',
           title: utils.textNormalize(divData.text)
@@ -157,6 +156,7 @@ function makeResponse(story, response) {
         const tweetText = utils.createElement('Media', tweetTextAttributes);
         card.children.push(tweetText);
         
+        // tweet caption
         const tweetCaptionText = divData.caption;
         if (tweetCaptionText) {
           const imageCaption = utils.createElement('CardHeader', { subtitle: tweetCaptionText });
@@ -179,16 +179,78 @@ function makeResponse(story, response) {
 
   // footer
   const footer = utils.getCardFooter(story);
-
-  // open button
-  const openButtonAttributes = {
-    label: 'Открыть на сайте',
-    uri: story.url
-  };
-  const openButton = utils.createElement('Action', openButtonAttributes);
-  card.children.push(footer, openButton);
-
+  card.children.push(footer);
   cards.children.push(card);
+
+  // open card
+  const storyUrl = story.url;
+  const hyperlinkCardAttributes = {
+    uri: storyUrl,
+    fullWidth: true
+  };
+  const hyperlinkCard = utils.createElement('Card', hyperlinkCardAttributes, []);
+  // open label
+  const openButtonAttributes = {
+    iconName: 'link',
+    color: '#2196f3',
+    title: 'ОТКРЫТЬ НА САЙТЕ',
+    subtitle: storyUrl
+  };
+  const openButton = utils.createElement('Media', openButtonAttributes);
+  hyperlinkCard.children.push(openButton);
+  cards.children.push(hyperlinkCard);
+
+  // comments card
+  const commentsPreview = story.commentsPreview;
+  if (commentsPreview.length) {
+    for (let commentPreview of commentsPreview) {
+      const commentsCard = utils.createElement('Card', { fullWidth: true }, []);
+      // user
+      const commentTime = new Date(commentPreview.date * 1000);
+      const user = commentPreview.user;
+      const userAttributes = {
+        imageUrl: user.profile_big_image_url,
+        created: {
+          by: user.name,
+          at: commentTime
+        }
+      };
+      const userElement = utils.createElement('Media', userAttributes);
+      commentsCard.children.push(userElement);
+
+      // comment text
+      const commentText = utils.createElement('CardBodyText', { text: commentPreview.text });
+      commentsCard.children.push(commentText);
+
+      // comment image
+      const commentMediaArray = commentPreview.media;
+      if (commentMediaArray) {
+        for (let commentMedia of commentMediaArray) {
+          const commentImageAttributes = {
+            width: commentMedia.thumbnail_width,
+            height: commentMedia.thumbnail_height,
+            uri: commentMedia.thumbnail_url
+          };
+          const commentImage = utils.createElement('CardImage', commentImageAttributes);
+          commentsCard.children.push(commentImage);
+        }
+      }
+
+      // comment likes
+      const commentLikesAttributes = {
+        labels: [
+          {
+            name: '👍+' + commentPreview.likes.summ,
+            color: 'dcedc8'
+          }
+        ]
+      };
+      const commentLikes = utils.createElement('CardFooter', commentLikesAttributes);
+      commentsCard.children.push(commentLikes);
+      cards.children.push(commentsCard);
+    }
+  }
+  
   response.json(result);
 }
 
