@@ -1,4 +1,4 @@
 ## archytj
-[TJ](https://the.tj/) news integration for [Archy](https://archy.ai/)
+Новости с сайта [TJ](https://the.tj/) для [Archy](https://archy.ai/)
 
-[Open in Archy](https://archy.ai/@pin37/tj)
+[Открыть на сайте Archy](https://archy.ai/@pin37/tj)

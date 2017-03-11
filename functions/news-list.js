@@ -38,10 +38,10 @@ function sendRequest(request, response) {
     type = 5;
   }
   fetch(responseUrl).then(res => res.json())
-    .then(json => makeResponse(json, response, page, type));
+    .then(news => makeResponse(news, response, page, type));
 }
 
-function makeResponse(json, response, page, type) {
+function makeResponse(news, response, page, type) {
   page.after += limit;
   const cards = utils.createElement('Cards', null, []);
   const resultAttributes = {
@@ -53,11 +53,11 @@ function makeResponse(json, response, page, type) {
   }
   const result = utils.createElement('Result', resultAttributes, [cards]);
 
-  for (let article of json) {
+  for (let article of news) {
     if (type !== 0 && type !== 5) {
       article.type = 0;
     }
-    result.children[0].children.push(toCard(article));
+    cards.children.push(toCard(article));
   }
   response.json(result);
 }
@@ -76,25 +76,13 @@ function toCard(article) {
     },
     timestamp
   };
-  const isPopular = article.isReadMore;
-  const title = article.title;
-  if (isPopular) {
-    cardAttributes.pushNotification = { title: 'TJ', subtitle: title };
+  if (article.isReadMore) {
+    cardAttributes.pushNotification = { title: 'TJ', subtitle: article.title };
   }
   const card = utils.createElement('Card', cardAttributes, []);
 
   // header
-  const header = utils.createElement('CardHeader', { title });
-  const type = article.type;
-  if (type === 4) {
-    header.attributes.subtitle = 'Статья';
-  } else if (type === 3) {
-    header.attributes.subtitle = 'Видео';
-  } else if (type === 2) {
-    header.attributes.subtitle = 'Офтоп';
-  } else if (type === 1) {
-    header.attributes.subtitle = 'Новость';
-  }
+  const header = utils.getCardHeader(article);
 
   // author
   const userDevice = article.userDevice;
@@ -116,7 +104,7 @@ function toCard(article) {
   const author = utils.createElement('Media', authorAttributes);
 
   // text
-  const text = utils.createElement('CardBodyText', { text: utils.textNormalize(article.intro) });
+  const text = utils.getTextElement(article.intro);
   card.children.push(header, author, text);
 
   // image
@@ -132,45 +120,7 @@ function toCard(article) {
   }
 
   // footer
-  const likesCount = article.likes.summ;
-  const like = {
-    name: '—',
-    color: 'ffffff'
-  };
-  if (likesCount > 0) {
-    like.name = '👍+' + likesCount;
-    like.color = 'dcedc8';
-  } else if (likesCount < 0) {
-    like.name = '👎' + likesCount;
-    like.color = 'ffcdd2';
-  }
-  const footerAttributes = {
-    labels: [
-      like,
-      {
-        name: '👁' + article.hits,
-        color: 'ffffff'
-      }, {
-        name: '💬' + article.commentsCount,
-        color: 'ffffff'
-      }
-    ]
-  };
-  if (isPopular) {
-    footerAttributes.labels.push(
-      {
-        name: '🔥hot',
-        color: 'ffffff'
-      });
-  }
-  if (article.isAdvertising) {
-    footerAttributes.labels.push(
-      {
-        name: '💵ad',
-        color: 'ffffff'
-      });
-  }
-  const footer = utils.createElement('CardFooter', footerAttributes);
+  const footer = utils.getCardFooter(article);
   card.children.push(footer);
   return card;
 }
