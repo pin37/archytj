@@ -185,14 +185,18 @@ function makeResponse(story, response) {
   // source
   const storyExternalLink = story.externalLink;
   if (storyExternalLink) {
-    const sourceAttributes = {
-      linkTo: {
-        address: "@pin37/tj/source",
-        args: {
-          id: story.id
+    const sourceData = storyExternalLink.data;
+    let sourceAttributes = { uri: sourceData.url };
+    if (sourceData.description.trim()) {
+      sourceAttributes = {
+        linkTo: {
+          address: "@pin37/tj/source",
+          args: {
+            id: story.id
+          }
         }
-      }
-    };
+      };
+    }
     const sourceCard = utils.createElement('Card', sourceAttributes, []);
     
     const sourceLabelAttributes = {
