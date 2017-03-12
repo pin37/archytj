@@ -182,23 +182,34 @@ function makeResponse(story, response) {
   card.children.push(footer);
   cards.children.push(card);
 
-  // open card
-  const storyUrl = story.url;
-  const hyperlinkCardAttributes = {
-    uri: storyUrl,
-    fullWidth: true
-  };
-  const hyperlinkCard = utils.createElement('Card', hyperlinkCardAttributes, []);
-  // open label
-  const openButtonAttributes = {
-    iconName: 'link',
-    color: '#2196f3',
-    title: 'ОТКРЫТЬ НА САЙТЕ',
-    subtitle: storyUrl
-  };
-  const openButton = utils.createElement('Media', openButtonAttributes);
-  hyperlinkCard.children.push(openButton);
-  cards.children.push(hyperlinkCard);
+  // source
+  const storyExternalLink = story.externalLink;
+  if (storyExternalLink) {
+    const sourceAttributes = {
+      //fullWidth: true,
+      linkTo: {
+        address: "@pin37/tj/source",
+        args: {
+          id: story.id
+        }
+      }
+    };
+    const sourceCard = utils.createElement('Card', sourceAttributes, []);
+    
+    const sourceLabelAttributes = {
+      iconName: 'link',
+      color: '#2196f3',
+      title: 'ИСТОЧНИК',
+      subtitle: storyExternalLink.domain
+    };
+    const sourceLabel = utils.createElement('Media', sourceLabelAttributes);
+    sourceCard.children.push(sourceLabel);
+    cards.children.push(sourceCard);
+  }
+  
+  // external link
+  const externalLink = utils.getExternalLink(story.url);
+  cards.children.push(externalLink);
 
   // comments card
   const commentsPreview = story.commentsPreview;

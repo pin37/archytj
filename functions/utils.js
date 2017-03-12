@@ -114,6 +114,24 @@ function getCardFooter(article) {
   return createElement('CardFooter', footerAttributes);
 }
 
+function getExternalLink(url) {
+  const hyperlinkCardAttributes = {
+    //fullWidth: true,
+    uri: url
+  };
+  const hyperlinkCard = createElement('Card', hyperlinkCardAttributes, []);
+  
+  const openButtonAttributes = {
+    iconName: 'external-link-square',
+    color: '#2196f3',
+    title: 'ОТКРЫТЬ НА САЙТЕ',
+    subtitle: url
+  };
+  const openButton = createElement('Media', openButtonAttributes);
+  hyperlinkCard.children.push(openButton);
+  return hyperlinkCard;
+}
+
 function getTextElement(text) {
   return createElement('CardBodyText', { text: textNormalize(text) });
 }
@@ -124,3 +142,4 @@ exports.textNormalize = textNormalize;
 exports.getCardHeader = getCardHeader;
 exports.getCardFooter = getCardFooter;
 exports.getTextElement = getTextElement;
+exports.getExternalLink = getExternalLink;
