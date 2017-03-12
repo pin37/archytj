@@ -116,7 +116,6 @@ function getCardFooter(article) {
 
 function getExternalLink(url) {
   const hyperlinkCardAttributes = {
-    //fullWidth: true,
     uri: url
   };
   const hyperlinkCard = createElement('Card', hyperlinkCardAttributes, []);

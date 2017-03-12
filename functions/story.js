@@ -186,7 +186,6 @@ function makeResponse(story, response) {
   const storyExternalLink = story.externalLink;
   if (storyExternalLink) {
     const sourceAttributes = {
-      //fullWidth: true,
       linkTo: {
         address: "@pin37/tj/source",
         args: {
