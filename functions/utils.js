@@ -51,9 +51,9 @@ function createElement(elementName, attributes, children) {
 function textNormalize(text) {
   return striptags(text, '<p>')
     .replace(/(?:https?|ftp):\/\/[\n\S]+/g, '')
-    .replace(new RegExp('</p><p>', 'g'), '\n\n')
-    .replace(new RegExp('<p>', 'g'), '')
-    .replace(new RegExp('</p>', 'g'), '')
+    .replace(/<\/p><p>/g, '\n\n')
+    .replace(/<p>/g, '')
+    .replace(/<\/p>/g, '')
     .trim();
 }
 
